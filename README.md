@@ -6,3 +6,8 @@ Workflow draft: https://drive.google.com/file/d/1j4Dyc8r2s1QNULw6P406jrJL6DGQwi8
 
 ## References
 - flask+react+mongodb env setting: https://dev.to/kouul/frmp-stack-5g9
+
+## Dependencies
+- Axios, AntDesign (Frontend)
+- flask CORS, flask (Backend)
+- Pytorch, transformers (NLP)
