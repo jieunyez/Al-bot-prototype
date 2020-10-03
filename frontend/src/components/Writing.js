@@ -41,15 +41,30 @@ function Writing() {
 
 
     const sendareq = async() => {
-      const reqData= { model : modelData[selections[0]],}
+      const reqData= { model : modelData[selections[0]], writing: writing}
       let here_idx= 1;
       for (let kkkey in paramData[modelData[selections[0]]]) {
         reqData[kkkey]= selections[here_idx];
         here_idx= here_idx +1;
       }
-      const response = await axios.post("", reqData);//change here!
-      setOutput(response.data);
-    }
+      console.log(selections)
+      console.log(reqData)
+      //const response = await axios.post("http://0.0.0.0:5000/", reqData);
+      var config = { headers: {  
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'}
+        }
+
+      axios.post("http://127.0.0.1:5000/test",reqData, config).then(function (response) {
+        console.log('response is');
+        console.log(response);
+        console.log(response.data.data);
+        setOutput(response.data.data);
+      }).catch(function (error) {
+        console.log(error);
+      });
+      
+    } 
 
     function handleCallBackend(w,s) { 
       console.log(`writing ${w}`);  //how to add w to reqdata also??????????
@@ -65,7 +80,7 @@ function Writing() {
             <Panel header="Open Controller" key="1">
             <Radio.Group value="top" style={{ marginBottom: 5 }}>
             </Radio.Group>
-            <Tabs defaultActiveKey="0" tabPosition= "top" style={{ height: 200 }} onChange= {handleModel}>
+            <Tabs defaultActiveKey="0" tabPosition= "top" style={{ height: 100 }} onChange= {handleModel}>
             {[...Array.from({ length: 2}, (v, i) => i)].map(i => (
             <TabPane tab={`${modelData[i]}`} key={i}>
               {

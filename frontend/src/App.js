@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Affix, Button } from 'antd';
 import Note from  './components/Note';
 import Writing from  './components/Writing';
 import './App.css';
@@ -9,6 +9,7 @@ import './App.css';
 function App() {
   const [fields, setFields] = useState([]);
   const [isNotes, setIsNotes] = useState([]);
+  const [top, setTop] = useState(10);
 
   function handleAddNote() {
     const cell_types = [...isNotes];
@@ -42,8 +43,12 @@ function App() {
 
   return (
     <div className="App">
-    <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
-    <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
+    <Affix offsetTop={top}>
+        <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
+        <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
+    </Affix>
+    {/* <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button> */}
+    {/* <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button> */}
     {fields.map((field, idx) => {
         return (
           <div key={`${field}-${idx}`}>

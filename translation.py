@@ -6,6 +6,7 @@ def test1(language, model, tokenizer):
         return_tensors="pt")
     outputs = model.generate(inputs, max_length=40, num_beams=4, early_stopping=True)
     print(tokenizer.decode(outputs[0]))
+    print(type(tokenizer.decode(outputs[0])) is str)
 
 if __name__ == '__main__':
     model = AutoModelWithLMHead.from_pretrained("t5-base")
