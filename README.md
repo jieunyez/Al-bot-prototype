@@ -1,4 +1,5 @@
-# Al-bot-prototype
+# Conversational-AI-Prototyping-Tool
+
 CS 5999 FA20
 
 ## Workflow Draft
