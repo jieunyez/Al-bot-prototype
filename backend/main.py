@@ -1,17 +1,16 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from transformers import AutoModelWithLMHead, AutoTokenizer
-from flask_pymongo import PyMongo
+# from flask_pymongo import PyMongo
 import json
 import sys
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-app.config['MONGO_DBNAME'] = 'usersLog'
+# app.config['MONGO_DBNAME'] = 'usersLog'
+# app.config['MONGO_URI'] = 'mongodb://todo:towait.com@localhost:27017/usersLog'
 
-app.config['MONGO_URI'] = 'mongodb://todo:towait.com@localhost:27017/usersLog'
-
-mongo = PyMongo(app)
+# mongo = PyMongo(app)
 
 CORS(app)
 
@@ -24,8 +23,7 @@ def translators():
     if model == "Translation":
         lang = request_json.get("language")
         text = request_json.get("writing")
-        print(lang)
-        print(text)
+    
     
         # Init model.
         model = AutoModelWithLMHead.from_pretrained("t5-base")
