@@ -15,7 +15,7 @@ const { Paragraph } = Typography;
 const modelData = ['Translation', 'Summary'];
 const paramData = {
       Translation: {language: ['French', 'German'],},
-      Summary: {param1:['p1choice1', 'p1choice2'], param2: ['p2choice1']},
+      Summary: {NoParameterNeeded:[]},
     };
 
 
@@ -42,7 +42,9 @@ function Writing() {
 
     const sendareq = async() => {
       const reqData= { model : modelData[selections[0]], writing: writing}
+      // TO DO : change model 逻辑写在前端
       let here_idx= 1;
+
       for (let kkkey in paramData[modelData[selections[0]]]) {
         reqData[kkkey]= selections[here_idx];
         here_idx= here_idx +1;
