@@ -4,8 +4,6 @@ import Note from  './components/Note';
 import Writing from  './components/Writing';
 import './App.css';
 
-
-
 function App() {
   const [fields, setFields] = useState([]);
   const [isNotes, setIsNotes] = useState([]);
@@ -19,6 +17,8 @@ function App() {
     const values = [...fields];
     values.push({ value: null });
     setFields(values);
+
+    console.log(values);
   }
 
   function handleAddWrite() {
@@ -29,16 +29,24 @@ function App() {
     const values = [...fields];
     values.push({ value: null });
     setFields(values);
+
+    console.log(values);
   }
 
-  function handleRemove(i) {
+
+
+  function handleBRemove(i) {
+    console.log(``);
     const values = [...fields];
+    const cell_types = [...isNotes];
+
+
+  
     values.splice(i, 1);
     setFields(values);
-    
-    const cell_types = [...isNotes];
     cell_types.splice(i, 1);
     setIsNotes(cell_types);
+    //handleNoteRm();
   }
 
   return (
@@ -52,9 +60,11 @@ function App() {
     {fields.map((field, idx) => {
         return (
           <div key={`${field}-${idx}`}>
-            {isNotes[idx]? <Note />: <Writing />}
-            <Button type= "dashed" size= "small" onClick={() => handleRemove(idx)} danger>
-              x Delete the Above Section
+            {isNotes[idx]? 
+            <Note />
+            : <Writing />}
+            <Button type= "dashed" size= "small" onClick={() => handleBRemove(idx)} danger>
+              x Delete the Above Section {idx}
             </Button>
           </div>
         );
