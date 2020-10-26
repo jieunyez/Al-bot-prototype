@@ -54,11 +54,11 @@ function App() {
     <div className="App">
     <Affix offsetTop={top}>
       <Input
-      placeholder="Enter your username"
+      placeholder="Enter your username here please"
       prefix={<UserOutlined className="site-form-item-icon" />}
         />
       <Input
-      placeholder="Enter your password"
+      placeholder="Enter your password here please"
       />
         <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
         <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
