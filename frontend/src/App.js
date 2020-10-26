@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Affix, Button } from 'antd';
+import { Input, Affix, Button } from 'antd';
+import {UserOutlined } from '@ant-design/icons'
 import Note from  './components/Note';
 import Writing from  './components/Writing';
 import './App.css';
@@ -52,6 +53,13 @@ function App() {
   return (
     <div className="App">
     <Affix offsetTop={top}>
+      <Input
+      placeholder="Enter your username"
+      prefix={<UserOutlined className="site-form-item-icon" />}
+        />
+      <Input
+      placeholder="Enter your password"
+      />
         <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
         <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
     </Affix>
