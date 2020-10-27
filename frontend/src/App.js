@@ -60,6 +60,7 @@ function App() {
       <Input
       placeholder="Enter your password here please"
       />
+      <Button type="dashed" onClick={() => handleAddWrite()}>Submit Your Information</Button>
         <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
         <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
     </Affix>
