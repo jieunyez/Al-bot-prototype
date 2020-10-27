@@ -80,7 +80,28 @@ def summarization():
                 "data": tokenizer.decode(outputs[0])
             }
     return jsonify(response)
-    
+
+
+@app.route('/completion', methods=['POST'])
+def completion():
+    # Get the parameters and raw texts from the frontend side(JSON format).
+    request_json = request.get_json()
+    article = request_json.get("writing")
+
+    # Init model.
+    model = AutoModelWithLMHead.from_pretrained("t5-base")
+    tokenizer = AutoTokenizer.from_pretrained("t5-base")
+
+    # Get summarization result.
+    inputs = tokenizer.encode("summarize: " + article, return_tensors="pt", max_length=512)
+    outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4,
+                             early_stopping=True)
+
+    response = {
+        "success": True,
+        "data": tokenizer.decode(outputs[0])
+    }
+    return jsonify(response)
 
 
 
