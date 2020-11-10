@@ -1,16 +1,19 @@
 from flask import Flask, redirect, url_for, request, render_template, jsonify
 from transformers import AutoModelWithLMHead, AutoTokenizer
-# from flask_pymongo import PyMongo
+from flask_pymongo import PyMongo
 import json
 import sys
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-# app.config['MONGO_DBNAME'] = 'usersLog'
-# app.config['MONGO_URI'] = 'mongodb://todo:towait.com@localhost:27017/usersLog'
+app.config.update(
+    MONGO_URI='mongodb://localhost:27017/flask',
+    MONGO_USERNAME='wxc',
+    MONGO_PASSWORD='111111'
+)
 
-# mongo = PyMongo(app)
+mongo = PyMongo(app)
 
 CORS(app)
 
@@ -21,6 +24,7 @@ def translators():
     request_json = request.get_json()
     model = request_json.get("model")
     if model == "Translation":
+        userid = request_json.get("ID")
         lang = request_json.get("language")
         text = request_json.get("writing")
     
@@ -37,6 +41,10 @@ def translators():
     
         outputs = model.generate(inputs, max_length=40, num_beams=4, early_stopping=True)
         result = tokenizer.decode(outputs[0])
+        
+        # MongoDB
+        user = {'id':userid, 'model':'translation', 'input':text, 'output':result}
+        mongo.db.users.insert_one(user)
     
         response = {
                 "success": True,
@@ -55,6 +63,10 @@ def translators():
         inputs = tokenizer.encode("summarize: " + article, return_tensors="pt", max_length=512)
         outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
         
+        # MongoDB
+        user = {'id':userid, 'model':'summarization', 'input':article, 'output':tokenizer.decode(outputs[0])}
+        mongo.db.users.insert_one(user)
+        
         response = {
                     "success": True,
                     "data": tokenizer.decode(outputs[0])
@@ -65,6 +77,7 @@ def translators():
 def summarization():
     # Get the parameters and raw texts from the frontend side(JSON format).
     request_json = request.get_json()
+    userid = request_json.get("ID")
     article = request_json.get("writing")
     
     # Init model.
@@ -74,6 +87,10 @@ def summarization():
     # Get summarization result.
     inputs = tokenizer.encode("summarize: " + article, return_tensors="pt", max_length=512)
     outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
+    
+    # MongoDB
+    user = {'id':userid, 'model':'summarization', 'input':article, 'output':tokenizer.decode(outputs[0])}
+    mongo.db.users.insert_one(user)
     
     response = {
                 "success": True,
@@ -86,6 +103,7 @@ def summarization():
 def completion():
     # Get the parameters and raw texts from the frontend side(JSON format).
     request_json = request.get_json()
+    userid = request_json.get("ID")
     article = request_json.get("writing")
 
     # Init model.
@@ -96,6 +114,10 @@ def completion():
     inputs = tokenizer.encode("summarize: " + article, return_tensors="pt", max_length=512)
     outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4,
                              early_stopping=True)
+    
+    # MongoDB
+    user = {'id':userid, 'model':'completion', 'input':article, 'output':tokenizer.decode(outputs[0])}
+    mongo.db.users.insert_one(user)
 
     response = {
         "success": True,
