@@ -1,15 +1,11 @@
-import React, { useState} from 'react';
+import React from 'react';
 import { Input } from 'antd';
 
 const { TextArea } = Input;
 
 function Note() {//存writing input
-    const [writing, setWriting] = useState('');
-    const HRmv = () => {
-        setWriting('');
-        console.log(writing);
-        console.log(`rm!!!!!!!!`);
-    }
+    
+    
     return (
         <>
         <TextArea
