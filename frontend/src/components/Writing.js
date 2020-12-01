@@ -12,10 +12,11 @@ const {TabPane } = Tabs;
 const { Paragraph } = Typography;
 
 //const modelData = ['Translation', 'Summary'];
-const modelData = ['Translation', 'Summary'];
+const modelData = ['Translation', 'Summarization', 'Completion'];
 const paramData = {
       Translation: {language: ['French', 'German'],},
-      Summary: {NoParameterNeeded:[]},
+      Summarization: {NoParameterNeeded:[]},
+      Completion: {start_pos:['1','2','3','4','5','6','7','8','9','10']},
     };
 
 
@@ -41,7 +42,8 @@ function Writing() {
 
 
     const sendareq = async() => {
-      const reqData= { model : modelData[selections[0]], writing: writing}
+      // delete id later
+      const reqData= { model : modelData[selections[0]], writing: writing, id: 1}
       // TO DO : change model 逻辑写在前端
       let here_idx= 1;
 
@@ -83,7 +85,7 @@ function Writing() {
             <Radio.Group value="top" style={{ marginBottom: 5 }}>
             </Radio.Group>
             <Tabs defaultActiveKey="0" tabPosition= "top" style={{ height: 100 }} onChange= {handleModel}>
-            {[...Array.from({ length: 2}, (v, i) => i)].map(i => (
+            {[...Array.from({ length: 3}, (v, i) => i)].map(i => (
             <TabPane tab={`${modelData[i]}`} key={i}>
               {
                 Object.entries(paramData[modelData[i]])
