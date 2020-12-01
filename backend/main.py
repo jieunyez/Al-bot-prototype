@@ -105,23 +105,28 @@ def completion():
     request_json = request.get_json()
     userid = request_json.get("ID")
     article = request_json.get("writing")
+    prompt = "Here are eight companies pivoting"
+    
+    # Preprocess input
+    text_list = article.split('.')
+    new_article = '.'.join(text_list[-5:])
 
     # Init model.
-    model = AutoModelWithLMHead.from_pretrained("t5-base")
-    tokenizer = AutoTokenizer.from_pretrained("t5-base")
+    model = AutoModelWithLMHead.from_pretrained("xlnet-base-cased", return_dict=True)
+    tokenizer = AutoTokenizer.from_pretrained("xlnet-base-cased")
 
-    # Get summarization result.
-    inputs = tokenizer.encode("summarize: " + article, return_tensors="pt", max_length=512)
-    outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4,
-                             early_stopping=True)
+    inputs = tokenizer.encode(new_article + prompt, add_special_tokens=False, return_tensors="pt")
+    prompt_length = len(tokenizer.decode(inputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
+    outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=60)
+    generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
     
     # MongoDB
-    user = {'id':userid, 'model':'completion', 'input':article, 'output':tokenizer.decode(outputs[0])}
+    user = {'id':userid, 'model':'completion', 'input':article, 'output':generated}
     mongo.db.users.insert_one(user)
 
     response = {
         "success": True,
-        "data": tokenizer.decode(outputs[0])
+        "data": generated
     }
     return jsonify(response)
 
