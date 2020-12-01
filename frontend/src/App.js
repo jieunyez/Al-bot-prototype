@@ -1,18 +1,25 @@
 import React, { useState } from 'react';
-import { Input, Affix, Button } from 'antd';
-import {UserOutlined } from '@ant-design/icons'
+import { Input, Affix, Button, Layout, Menu, Collapse } from 'antd';
+import {UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined} from '@ant-design/icons'
 import Note from  './components/Note';
 import Writing from  './components/Writing';
+import User from  './components/User';
 import axios from 'axios';
 import './App.css';
 
+const { Header, Sider, Content } = Layout;
+const { Panel } = Collapse;
 
 function App() {
   const [fields, setFields] = useState([]);
   const [isNotes, setIsNotes] = useState([]);
   const [top, setTop] = useState(10);
-
   const [id_input, setid] = useState(''); 
+  const [isCollapsed, setCollapsed] = useState(false);
+
+  function handleCollapsed() {
+    setCollapsed(!isCollapsed);
+  }
 
   function handleAddNote() {
     const cell_types = [...isNotes];
@@ -54,11 +61,12 @@ function App() {
     //handleNoteRm();
   }
 
+  //send ID to backend
   function handleID(w) {
     console.log(`writing ${w}`); 
 
     const reqData= { ID: id_input}
-    // TO DO : change model 逻辑写在前端
+    
   
     console.log(reqData)
     //const response = await axios.post("http://0.0.0.0:5000/", reqData);
@@ -79,33 +87,50 @@ function App() {
 
   return (
     <div className="App">
-    <Affix offsetTop={top}>
-      <Input
-      placeholder="Enter your username here please"
-      prefix={<UserOutlined className="site-form-item-icon" />}
-      onChange= {event => setid(event.target.value)}
-        />
-      <Input
-      placeholder="Enter your password here please"
-      />
-      <Button type="primary" onClick={() => handleID(id_input)}>Sign In</Button>
-        <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
-        <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
-    </Affix>
-    {/* <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button> */}
-    {/* <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button> */}
-    {fields.map((field, idx) => {
-        return (
-          <div key={`${field}-${idx}`}>
-            {isNotes[idx]? 
-            <Note />
-            : <Writing />}
-            <Button type= "dashed" size= "small" onClick={() => handleBRemove(idx)} danger>
-              x Delete the Above Section {idx}
-            </Button>
-          </div>
-        );
-      })}
+      <Layout>
+        <Sider collapsible>
+          <div className="logo" />
+          <Menu defaultSelectedKeys={['1']}>
+            <Menu.Item key="1" icon={<UserOutlined />}>
+            User log-in
+            </Menu.Item>
+            <User />
+          </Menu>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="site-layout-background">
+          <MenuUnfoldOutlined className="trigger" onClick= {() => handleCollapsed()}/> 
+            {isCollapsed ? 
+            <MenuUnfoldOutlined className="trigger" onClick= {() => handleCollapsed()}/> 
+            : <MenuFoldOutlined className="trigger" onClick= {() => handleCollapsed()}/>
+            }
+          </Header>
+          <Content
+            className="site-layout-background"
+          >
+          {/* original content here */}
+          <Affix offsetTop={top}>
+          <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button>
+          <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button>
+          </Affix>
+          {/* <Button type="dashed" onClick={() => handleAddWrite()}>+Write</Button> */}
+          {/* <Button type= "dashed" onClick={() => handleAddNote()}>+Note</Button> */}
+          {fields.map((field, idx) => {
+              return (
+                <div key={`${field}-${idx}`}>
+                  {isNotes[idx]? 
+                  <Note />
+                  : <Writing />}
+                  <Button type= "dashed" size= "small" onClick={() => handleBRemove(idx)} danger>
+                    x Delete the Above Section {idx}
+                  </Button>
+                </div>
+              );
+            })}
+          </Content>
+        </Layout>
+      </Layout>
+
     </div>
   );
 }
