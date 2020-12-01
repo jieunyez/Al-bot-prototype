@@ -52,7 +52,7 @@ def translators():
                 }
         
         return jsonify(response)
-    else:
+    elif model == "Summarization":
         article = request_json.get("writing")
     
         # Init model.
@@ -71,6 +71,35 @@ def translators():
                     "success": True,
                     "data": tokenizer.decode(outputs[0])
                 }
+        return jsonify(response)
+    else:
+        # Get the parameters and raw texts from the frontend side(JSON format).
+        article = request_json.get("writing")
+        prompt = "Here are eight companies pivoting"
+        
+        # Preprocess input
+        # In the future we can add a parameter to control how many sentences we
+        # want to put in the model.
+        text_list = article.split('.')
+        new_article = '.'.join(text_list[-5:])
+    
+        # Init model.
+        model = AutoModelWithLMHead.from_pretrained("xlnet-base-cased", return_dict=True)
+        tokenizer = AutoTokenizer.from_pretrained("xlnet-base-cased")
+    
+        inputs = tokenizer.encode(new_article + prompt, add_special_tokens=False, return_tensors="pt")
+        prompt_length = len(tokenizer.decode(inputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True))
+        outputs = model.generate(inputs, max_length=250, do_sample=True, top_p=0.95, top_k=60)
+        generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
+        
+        # MongoDB
+        user = {'id':userid, 'model':'completion', 'input':article, 'output':generated}
+        mongo.db.users.insert_one(user)
+    
+        response = {
+            "success": True,
+            "data": generated
+        }
         return jsonify(response)
 
 @app.route('/summarization', methods = ['POST'])
