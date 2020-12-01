@@ -3,9 +3,17 @@ from transformers import AutoModelWithLMHead, AutoTokenizer
 from flask_pymongo import PyMongo
 import json
 import sys
+import os
 from flask_cors import CORS
 
+import google_auth
+
 app = Flask(__name__)
+
+# Google Auth
+app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
+
+app.register_blueprint(google_auth.app)
 
 app.config.update(
     MONGO_URI='mongodb://localhost:27017/flask',
@@ -16,6 +24,14 @@ app.config.update(
 mongo = PyMongo(app)
 
 CORS(app)
+
+#@app.route('/')
+#def index():
+#    if google_auth.is_logged_in():
+#        user_info = google_auth.get_user_info()
+#        return '<div>You are currently logged in as ' + user_info['given_name'] + '<div><pre>' + json.dumps(user_info, indent=4) + "</pre>"
+#
+#    return 'You are not currently logged in.'
 
 
 @app.route('/test', methods = ['POST'])
@@ -43,8 +59,8 @@ def translators():
         result = tokenizer.decode(outputs[0])
         
         # MongoDB
-        user = {'id':userid, 'model':'translation', 'input':text, 'output':result}
-        mongo.db.users.insert_one(user)
+        #user = {'id':userid, 'model':'translation', 'input':text, 'output':result}
+        #mongo.db.users.insert_one(user)
     
         response = {
                 "success": True,
@@ -64,8 +80,8 @@ def translators():
         outputs = model.generate(inputs, max_length=150, min_length=40, length_penalty=2.0, num_beams=4, early_stopping=True)
         
         # MongoDB
-        user = {'id':userid, 'model':'summarization', 'input':article, 'output':tokenizer.decode(outputs[0])}
-        mongo.db.users.insert_one(user)
+        #user = {'id':userid, 'model':'summarization', 'input':article, 'output':tokenizer.decode(outputs[0])}
+        #mongo.db.users.insert_one(user)
         
         response = {
                     "success": True,
@@ -93,8 +109,8 @@ def translators():
         generated = prompt + tokenizer.decode(outputs[0])[prompt_length:]
         
         # MongoDB
-        user = {'id':userid, 'model':'completion', 'input':article, 'output':generated}
-        mongo.db.users.insert_one(user)
+        #user = {'id':userid, 'model':'completion', 'input':article, 'output':generated}
+        #mongo.db.users.insert_one(user)
     
         response = {
             "success": True,
