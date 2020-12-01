@@ -108,6 +108,8 @@ def completion():
     prompt = "Here are eight companies pivoting"
     
     # Preprocess input
+    # In the future we can add a parameter to control how many sentences we
+    # want to put in the model.
     text_list = article.split('.')
     new_article = '.'.join(text_list[-5:])
 
