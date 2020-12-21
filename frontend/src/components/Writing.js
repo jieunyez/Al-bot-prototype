@@ -22,8 +22,8 @@ const paramData = {
 
 function Writing() {
 
-    const [writing, setWriting] = useState(''); //存writing input
-    const [selections, setSelections] = useState([]);  //存不同model的选项
+    const [writing, setWriting] = useState(''); //stete for saving writing input
+    const [selections, setSelections] = useState([]);  //state for saving the selection of the model
     const [output,setOutput] = useState(null);
     
     function handleModel(activeKey) {
@@ -44,7 +44,7 @@ function Writing() {
     const sendareq = async() => {
       // delete id later
       const reqData= { model : modelData[selections[0]], writing: writing, id: 1}
-      // TO DO : change model 逻辑写在前端
+      // TO DO : change modeling logic could be done in frontend
       let here_idx= 1;
 
       for (let kkkey in paramData[modelData[selections[0]]]) {
@@ -71,7 +71,7 @@ function Writing() {
     } 
 
     function handleCallBackend(w,s) { 
-      console.log(`writing ${w}`);  //how to add w to reqdata also??????????
+      console.log(`writing ${w}`);  
       console.log(`writing ${s}`);
       //call backend
       sendareq();

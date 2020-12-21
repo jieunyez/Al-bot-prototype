@@ -3,8 +3,7 @@ import { Input } from 'antd';
 
 const { TextArea } = Input;
 
-function Note() {//存writing input
-    
+function Note() {
     
     return (
         <>
